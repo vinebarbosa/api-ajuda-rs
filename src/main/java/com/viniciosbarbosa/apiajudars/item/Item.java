@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.viniciosbarbosa.apiajudars.doacao.Doacao;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.util.Date;
 
 @Table(name = "itens")
 @Entity(name = "item")
@@ -12,8 +15,8 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Item {
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String nome;
 
@@ -26,6 +29,7 @@ public class Item {
     @JoinColumn(name = "doacao_id", nullable = false)
     @JsonBackReference
     private Doacao doacao;
+
 
     public Item(String nome, Integer quantidade, Categoria categoria, Doacao doacao) {
         this.nome = nome;

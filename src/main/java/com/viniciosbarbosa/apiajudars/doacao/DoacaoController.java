@@ -1,9 +1,11 @@
 package com.viniciosbarbosa.apiajudars.doacao;
 
+import com.viniciosbarbosa.apiajudars.doador.CreateDoadorDto;
 import com.viniciosbarbosa.apiajudars.doador.Doador;
 import com.viniciosbarbosa.apiajudars.doador.DoadorRepository;
 import com.viniciosbarbosa.apiajudars.item.Item;
 import com.viniciosbarbosa.apiajudars.item.ItemRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,11 +32,22 @@ public class DoacaoController {
     }
 
     @PostMapping
-    public void criar(@RequestBody DoacaoRequestDto data) {
-        Optional<Doador> doador = doadorRepository.findById(data.doador_id());
-        Doacao doacaoData = new Doacao(doador.orElse(null));
-        Doacao doacao = doacaoRepository.save(doacaoData);
-        List<Item> itensData = data.itens().stream().map((Item item) -> new Item(item.getNome(),  item.getQuantidade(), item.getCategoria(), doacao)).collect(Collectors.toList());
-        itemRepository.saveAll(itensData);
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public void criar(@RequestBody CreateDoacaoDto data) {
+
+        Optional<Doador> optionalDoador = doadorRepository.findById(data.doador().instagram());
+
+        Doador doador = optionalDoador.orElseGet(() -> doadorRepository.save(new Doador(data.doador())));
+
+        Doacao doacaoCriada = doacaoRepository.save(new Doacao(doador));
+
+        Item item = new Item(data.nome(), data.quantidade(), data.categoria(), doacaoCriada);
+
+        itemRepository.save(item);
+    }
+
+    @PutMapping
+    public void atualizar() {
+
     }
 }

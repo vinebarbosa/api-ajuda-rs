@@ -12,19 +12,24 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "instagram")
 public class Doador {
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
     private String nome;
+
+    @Id
     private String instagram;
 
     @OneToMany(mappedBy = "doador", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Doacao> doacoes;
 
-    public Doador(DoadorRequestDto data) {
+    public Doador(CreateDoadorDto data) {
         this.nome = data.nome();
         this.instagram = data.instagram();
+    }
+
+    public Doador( String nome, String instagram) {
+        this.nome = nome;
+        this.instagram = instagram;
     }
 }
